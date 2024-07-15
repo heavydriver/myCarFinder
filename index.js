@@ -69,6 +69,7 @@ data.records.map((record) => {
 
 const bot = new TelegramBot(telegramToken, { polling: false });
 const chatId1 = process.env.MY_CHAT_ID_ONE;
+const chatId2 = process.env.MY_CHAT_ID_TWO;
 
 // bot.on("message", (msg) => {
 //   const chatId = msg.chat.id;
@@ -80,17 +81,19 @@ const chatId1 = process.env.MY_CHAT_ID_ONE;
 // });
 
 if (newRecords.length > 0) {
-  // bot.sendMessage(chatId1, "New cars found");
   newRecords.map(async (record) => {
     try {
       await bot.sendPhoto(chatId1, record?.thumbnailUrlLarge);
+      await bot.sendPhoto(chatId2, record?.thumbnailUrlLarge);
     } catch (err) {
       console.log(err);
     }
 
     const message = `${record.year} ${record.make} ${record.model}\nPrice - ${record.price}\nMileage - ${record.mileage}\nDealer - ${record.dealerName}\nVin - ${record.vin}`;
     await bot.sendMessage(chatId1, message);
+    await bot.sendMessage(chatId2, message);
   });
 } else {
   await bot.sendMessage(chatId1, "No new car(s) found");
+  await bot.sendMessage(chatId2, "No new car(s) found");
 }
